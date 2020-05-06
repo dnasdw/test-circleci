@@ -1,9 +1,11 @@
 version: 2.1
-orbs:
-  win: circleci/windows@2.2.0
 jobs:
   build:
-    executor: win/default
+    docker:
+      - image: alpine:3.7
     steps:
-      - checkout
-      - run: 'Write-Host "Hello, Windows"'
+      - run:
+          name: The First Step
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
