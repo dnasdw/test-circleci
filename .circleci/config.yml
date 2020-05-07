@@ -22,6 +22,7 @@ jobs:
           name: cmd
           shell: cmd.exe
           command: ping www.google.com
+            pwd
 
 workflows:
   version: 2
