@@ -21,8 +21,7 @@ jobs:
       - run:
           name: cmd
           shell: cmd.exe
-          command: &
-            ping www.google.com
+          command: ping www.google.com &
             pwd
 
 workflows:
