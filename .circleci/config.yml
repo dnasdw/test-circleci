@@ -23,7 +23,7 @@ jobs:
           shell: cmd.exe
           command:
             dir C:\ &&
-            dir C:\Program Files (x86)\
+            dir "C:\Program Files (x86)\"
 
 workflows:
   version: 2
