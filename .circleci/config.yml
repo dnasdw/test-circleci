@@ -22,9 +22,8 @@ jobs:
           name: cmd
           shell: cmd.exe
           command:
-            cmake &&
-            ping www.google.com &&
-            pwd
+            dir C:\ &&
+            dir C:\Program Files (x86)\
 
 workflows:
   version: 2
