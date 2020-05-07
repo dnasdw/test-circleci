@@ -7,8 +7,8 @@ commands:
   git_checkout_with_submodule:
     steps:
       - checkout
-      - git submodule sync --recursive
-      - git submodule update --init --recursive
+      - run: git submodule sync --recursive
+      - run: git submodule update --init --recursive
 
 jobs:
   windows_vs2019_x86_32:
