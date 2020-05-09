@@ -27,9 +27,7 @@ jobs:
       - run:
           name: cmd
           shell: cmd.exe
-          command: |
-            .cicommon\cmake_vs_build.bat
-            
+          command: .cicommon\cmake_vs_build.bat "vs2019"
 
 workflows:
   version: 2
