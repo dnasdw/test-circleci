@@ -85,21 +85,21 @@ IF "%ARGS2%"=="devenv" (
 
     IF "%ARGS1%"=="vs2008" (
         IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR="Visual Studio 9 2008"
+            SET GENERATOR=Visual Studio 9 2008
         ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR="Visual Studio 9 2008 Win64"
+            SET GENERATOR=Visual Studio 9 2008 Win64
         )
     ) ELSE IF "%ARGS1%"=="vs2010" (
         IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR="Visual Studio 10"
+            SET GENERATOR=Visual Studio 10
         ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR="Visual Studio 10 Win64"
+            SET GENERATOR=Visual Studio 10 Win64
         )
     ) ELSE IF "%ARGS1%"=="vs2012" (
         IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR="Visual Studio 11"
+            SET GENERATOR=Visual Studio 11
         ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR="Visual Studio 11 Win64"
+            SET GENERATOR=Visual Studio 11 Win64
         )
         IF "%ARGS5%"=="xp" (
             SET TOOLSET=v110_xp
@@ -108,9 +108,9 @@ IF "%ARGS2%"=="devenv" (
         )
     ) ELSE IF "%ARGS1%"=="vs2013" (
         IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR="Visual Studio 12"
+            SET GENERATOR=Visual Studio 12
         ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR="Visual Studio 12 Win64"
+            SET GENERATOR=Visual Studio 12 Win64
         )
         IF "%ARGS5%"=="xp" (
             SET TOOLSET=v120_xp
@@ -119,9 +119,9 @@ IF "%ARGS2%"=="devenv" (
         )
     ) ELSE IF "%ARGS1%"=="vs2015" (
         IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR="Visual Studio 14"
+            SET GENERATOR=Visual Studio 14
         ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR="Visual Studio 14 Win64"
+            SET GENERATOR=Visual Studio 14 Win64
         )
         IF "%ARGS5%"=="xp" (
             SET TOOLSET=v140_xp
@@ -130,9 +130,9 @@ IF "%ARGS2%"=="devenv" (
         )
     ) ELSE IF "%ARGS1%"=="vs2017" (
         IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR="Visual Studio 15"
+            SET GENERATOR=Visual Studio 15
         ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR="Visual Studio 15 Win64"
+            SET GENERATOR=Visual Studio 15 Win64
         )
         IF "%ARGS5%"=="xp" (
             SET TOOLSET=v141_xp
@@ -140,7 +140,7 @@ IF "%ARGS2%"=="devenv" (
             SET TOOLSET=v141
         )
     ) ELSE IF "%ARGS1%"=="vs2019" (
-        SET GENERATOR="Visual Studio 16"
+        SET GENERATOR=Visual Studio 16
         SET TOOLSET=v142
     )
 
@@ -198,7 +198,7 @@ IF "%ARGS2%"=="devenv" (
     IF "%ARGS1%"=="vs2008" (
         IF DEFINED VS90COMNTOOLS (
             SET VCVARSALL="%VS90COMNTOOLS%..\..\VC\vcvarsall.bat"
-        }
+        )
     ) ELSE IF "%ARGS1%"=="vs2010" (
         IF DEFINED VS100COMNTOOLS (
             SET VCVARSALL="%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
