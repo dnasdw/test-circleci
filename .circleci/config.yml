@@ -27,14 +27,15 @@ jobs:
       - run:
           name: cmd
           shell: cmd.exe
-          command: >
+          command: |-
             PWD
-
+            
             PWD
-
+            
             SET
-
+            
             .cicommon\cmake_vs_build.bat
+            
 
 workflows:
   version: 2
