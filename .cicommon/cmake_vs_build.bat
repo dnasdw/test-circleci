@@ -18,6 +18,10 @@
 ::          only for vs2019
 ::      %TARGET%
 
+SET
+
+FOR /?
+
 IF NOT "%~1"=="vs2008" (
     IF NOT "%~1"=="vs2010" (
         IF NOT "%~1"=="vs2012" (
