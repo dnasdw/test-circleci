@@ -1,40 +1,52 @@
 ::  input:
-::      %ARGS1% %1 {vs2008|vs2010|vs2012|vs2013|vs2015|vs2017|vs2019}
-::      %ARGS2% %2 {devenv|nmake}
-::      %ARGS3% %3 {x86_32|x86_64}
-::      %ARGS4% %4 {Debug|Release|RelWithDebInfo|MinSizeRel}
-::      %ARGS5% %5 {winxp|win7}
+::      %A_VS_VERSION%
+::          [vs2008|vs2010|vs2012|vs2013|vs2015|vs2017|vs2019]
+::      %A_VS_TOOL%
+::          [devenv|nmake]
+::      %A_WINDOWS_VERSION%
+::          [winxp|win7]
 ::          only for vs2012/vs2013/vs2015/vs2017 devenv
-::      %ARGS6% %6 [target]
+::      %A_CMAKE_OPTIONS%
+::          for example "-C <initial-cache> -D <var>:<type>=<value>"
+::      %A_CMAKE_BUILD_ARCH%
+::          [x86_32|x86_64]
+::      %A_CMAKE_BUILD_TYPE%
+::          [Debug|Release|RelWithDebInfo|MinSizeRel]
+::      %A_CMAKE_BUILD_TARGET%
 ::          for example "install"
 
 ::  var:
+::      %CMAKE_OPTIONS%
 ::      %CMAKE_BUILD_TYPE%
-::      %GENERATOR%
-::      %TOOLSET%
+::      !CMAKE_GENERATOR!
+::          only for devenv
+::      !CMAKE_TOOLSET!
 ::          only for vs2012/vs2013/vs2015/vs2017/vs2019 devenv
-::      %PLATFORM%
+::      !CMAKE_PLATFORM!
 ::          only for vs2019 devenv
-::      %TARGET%
-::      %VCVARSALL%
+::      %CMAKE_BUILD_TARGET%
+::      !VCVARSALL!
 ::          only for nmake
-::      %ARCH%
+::      !VC_ARCH!
 ::          only for nmake
 
-SET ARGS1=%~1
-SET ARGS2=%~2
-SET ARGS3=%~3
-SET ARGS4=%~4
-SET ARGS5=%~5
-SET ARGS6=%~6
+SETLOCAL ENABLEDELAYEDEXPANSION
 
-IF NOT "%ARGS1%"=="vs2008" (
-    IF NOT "%ARGS1%"=="vs2010" (
-        IF NOT "%ARGS1%"=="vs2012" (
-            IF NOT "%ARGS1%"=="vs2013" (
-                IF NOT "%ARGS1%"=="vs2015" (
-                    IF NOT "%ARGS1%"=="vs2017" (
-                        IF NOT "%ARGS1%"=="vs2019" (
+SET A_VS_VERSION=%~1
+SET A_VS_TOOL=%~2
+SET A_WINDOWS_VERSION=%~3
+SET A_CMAKE_OPTIONS=%~4
+SET A_CMAKE_BUILD_ARCH=%~5
+SET A_CMAKE_BUILD_TYPE=%~6
+SET A_CMAKE_BUILD_TARGET=%~7
+
+IF NOT "%A_VS_VERSION%"=="vs2008" (
+    IF NOT "%A_VS_VERSION%"=="vs2010" (
+        IF NOT "%A_VS_VERSION%"=="vs2012" (
+            IF NOT "%A_VS_VERSION%"=="vs2013" (
+                IF NOT "%A_VS_VERSION%"=="vs2015" (
+                    IF NOT "%A_VS_VERSION%"=="vs2017" (
+                        IF NOT "%A_VS_VERSION%"=="vs2019" (
                             GOTO ERROR
                         )
                     )
@@ -44,182 +56,183 @@ IF NOT "%ARGS1%"=="vs2008" (
     )
 )
 
-IF NOT "%ARGS2%"=="devenv" (
-    IF NOT "%ARGS2%"=="nmake" (
+IF NOT "%A_VS_TOOL%"=="devenv" (
+    IF NOT "%A_VS_TOOL%"=="nmake" (
         GOTO ERROR
     )
 )
 
-IF NOT "%ARGS3%"=="x86_32" (
-    IF NOT "%ARGS3%"=="x86_64" (
+IF NOT "%A_WINDOWS_VERSION%"=="winxp" (
+    IF NOT "%A_WINDOWS_VERSION%"=="win7" (
         GOTO ERROR
     )
 )
 
-IF NOT "%ARGS4%"=="Debug" (
-    IF NOT "%ARGS4%"=="Release" (
-        IF NOT "%ARGS4%"=="RelWithDebInfo" (
-            IF NOT "%ARGS4%"=="MinSizeRel" (
+IF NOT "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+    IF NOT "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+        GOTO ERROR
+    )
+)
+
+IF NOT "%A_CMAKE_BUILD_TYPE%"=="Debug" (
+    IF NOT "%A_CMAKE_BUILD_TYPE%"=="Release" (
+        IF NOT "%A_CMAKE_BUILD_TYPE%"=="RelWithDebInfo" (
+            IF NOT "%A_CMAKE_BUILD_TYPE%"=="MinSizeRel" (
                 GOTO ERROR
             )
         )
     )
 )
 
-IF NOT "%ARGS5%"=="winxp" (
-    IF NOT "%ARGS5%"=="win7" (
-        GOTO ERROR
-    )
-)
+SET CMAKE_OPTIONS=%A_CMAKE_OPTIONS%
 
-SET CMAKE_BUILD_TYPE=%ARGS4%
+SET CMAKE_BUILD_TYPE=%A_CMAKE_BUILD_TYPE%
 
-SET TARGET=%ARGS6%
+SET CMAKE_BUILD_TARGET=%A_CMAKE_BUILD_TARGET%
 
-IF "%ARGS2%"=="devenv" (
-    IF "%ARGS3%"=="x86_32" (
-        SET PLATFORM=Win32
-    ) ELSE IF "%ARGS3%"=="x86_64" (
-        SET PLATFORM=x64
-    )
-
-    IF "%ARGS1%"=="vs2008" (
-        IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR=Visual Studio 9 2008
-        ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR=Visual Studio 9 2008 Win64
+IF "%A_VS_TOOL%"=="devenv" (
+    IF "%A_VS_VERSION%"=="vs2008" (
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_GENERATOR=Visual Studio 9 2008
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_GENERATOR=Visual Studio 9 2008 Win64
         )
-    ) ELSE IF "%ARGS1%"=="vs2010" (
-        IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR=Visual Studio 10
-        ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR=Visual Studio 10 Win64
+    ) ELSE IF "%A_VS_VERSION%"=="vs2010" (
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_GENERATOR=Visual Studio 10
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_GENERATOR=Visual Studio 10 Win64
         )
-    ) ELSE IF "%ARGS1%"=="vs2012" (
-        IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR=Visual Studio 11
-        ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR=Visual Studio 11 Win64
+    ) ELSE IF "%A_VS_VERSION%"=="vs2012" (
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_GENERATOR=Visual Studio 11
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_GENERATOR=Visual Studio 11 Win64
         )
-        IF "%ARGS5%"=="xp" (
-            SET TOOLSET=v110_xp
+        IF "%A_WINDOWS_VERSION%"=="xp" (
+            SET CMAKE_TOOLSET=v110_xp
         ) ELSE (
-            SET TOOLSET=v110
+            SET CMAKE_TOOLSET=v110
         )
-    ) ELSE IF "%ARGS1%"=="vs2013" (
-        IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR=Visual Studio 12
-        ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR=Visual Studio 12 Win64
+    ) ELSE IF "%A_VS_VERSION%"=="vs2013" (
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_GENERATOR=Visual Studio 12
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_GENERATOR=Visual Studio 12 Win64
         )
-        IF "%ARGS5%"=="xp" (
-            SET TOOLSET=v120_xp
+        IF "%A_WINDOWS_VERSION%"=="xp" (
+            SET CMAKE_TOOLSET=v120_xp
         ) ELSE (
-            SET TOOLSET=v120
+            SET CMAKE_TOOLSET=v120
         )
-    ) ELSE IF "%ARGS1%"=="vs2015" (
-        IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR=Visual Studio 14
-        ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR=Visual Studio 14 Win64
+    ) ELSE IF "%A_VS_VERSION%"=="vs2015" (
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_GENERATOR=Visual Studio 14
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_GENERATOR=Visual Studio 14 Win64
         )
-        IF "%ARGS5%"=="xp" (
-            SET TOOLSET=v140_xp
+        IF "%A_WINDOWS_VERSION%"=="xp" (
+            SET CMAKE_TOOLSET=v140_xp
         ) ELSE (
-            SET TOOLSET=v140
+            SET CMAKE_TOOLSET=v140
         )
-    ) ELSE IF "%ARGS1%"=="vs2017" (
-        IF "%PLATFORM%"=="Win32" (
-            SET GENERATOR=Visual Studio 15
-        ) ELSE IF "%PLATFORM%"=="x64" (
-            SET GENERATOR=Visual Studio 15 Win64
+    ) ELSE IF "%A_VS_VERSION%"=="vs2017" (
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_GENERATOR=Visual Studio 15
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_GENERATOR=Visual Studio 15 Win64
         )
-        IF "%ARGS5%"=="xp" (
-            SET TOOLSET=v141_xp
+        IF "%A_WINDOWS_VERSION%"=="xp" (
+            SET CMAKE_TOOLSET=v141_xp
         ) ELSE (
-            SET TOOLSET=v141
+            SET CMAKE_TOOLSET=v141
         )
-    ) ELSE IF "%ARGS1%"=="vs2019" (
-        SET GENERATOR=Visual Studio 16
-        SET TOOLSET=v142
+    ) ELSE IF "%A_VS_VERSION%"=="vs2019" (
+        SET CMAKE_GENERATOR=Visual Studio 16
+        SET CMAKE_TOOLSET=v142
+        IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+            SET CMAKE_PLATFORM=Win32
+        ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+            SET CMAKE_PLATFORM=x64
+        )
     )
 
     MKDIR build
     PUSHD build
-    IF "%ARGS1%"=="vs2008" (
-        cmake -G "%GENERATOR%" .. || (
+    IF "%A_VS_VERSION%"=="vs2008" (
+        cmake %CMAKE_OPTIONS% -G !%CMAKE_GENERATOR%! .. || (
             POPD
             GOTO ERROR
         )
-    ) ELSE IF "%ARGS1%"=="vs2010" (
-        cmake -G "%GENERATOR%" .. || (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2010" (
+        cmake %CMAKE_OPTIONS% -G !%CMAKE_GENERATOR%! .. || (
             POPD
             GOTO ERROR
         )
-    ) ELSE IF "%ARGS1%"=="vs2012" (
-        cmake -G "%GENERATOR%" -T %TOOLSET% .. || (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2012" (
+        cmake %CMAKE_OPTIONS% -G "!CMAKE_GENERATOR!" -T !CMAKE_TOOLSET! .. || (
             POPD
             GOTO ERROR
         )
-    ) ELSE IF "%ARGS1%"=="vs2013" (
-        cmake -G "%GENERATOR%" -T %TOOLSET% .. || (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2013" (
+        cmake %CMAKE_OPTIONS% -G "!CMAKE_GENERATOR!" -T !CMAKE_TOOLSET! .. || (
             POPD
             GOTO ERROR
         )
-    ) ELSE IF "%ARGS1%"=="vs2015" (
-        cmake -G "%GENERATOR%" -T %TOOLSET% .. || (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2015" (
+        cmake %CMAKE_OPTIONS% -G "!CMAKE_GENERATOR!" -T !CMAKE_TOOLSET! .. || (
             POPD
             GOTO ERROR
         )
-    ) ELSE IF "%ARGS1%"=="vs2017" (
-        cmake -G "%GENERATOR%" -T %TOOLSET% .. || (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2017" (
+        cmake %CMAKE_OPTIONS% -G "!CMAKE_GENERATOR!" -T !CMAKE_TOOLSET! .. || (
             POPD
             GOTO ERROR
         )
-    ) ELSE IF "%ARGS1%"=="vs2019" (
-        cmake -G "%GENERATOR%" -T %TOOLSET% -A %PLATFORM% .. || (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2019" (
+        cmake %CMAKE_OPTIONS% -G "!CMAKE_GENERATOR!" -T !CMAKE_TOOLSET! -A !CMAKE_PLATFORM! .. || (
             POPD
             GOTO ERROR
         )
     )
-    IF "%TARGET%"=="" (
+    IF "%CMAKE_BUILD_TARGET%"=="" (
         cmake --build . --config %CMAKE_BUILD_TYPE% --clean-first || (
             POPD
             GOTO ERROR
         )
     ) ELSE (
-        cmake --build . --target "%TARGET%" --config %CMAKE_BUILD_TYPE% --clean-first || (
+        cmake --build . --target "%CMAKE_BUILD_TARGET%" --config %CMAKE_BUILD_TYPE% --clean-first || (
             POPD
             GOTO ERROR
         )
     )
     POPD
-) ELSE IF "%ARGS2%"=="nmake" (
-    IF "%ARGS1%"=="vs2008" (
+) ELSE IF "%A_VS_TOOL%"=="nmake" (
+    IF "%A_VS_VERSION%"=="vs2008" (
         IF DEFINED VS90COMNTOOLS (
             SET VCVARSALL="%VS90COMNTOOLS%..\..\VC\vcvarsall.bat"
         )
-    ) ELSE IF "%ARGS1%"=="vs2010" (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2010" (
         IF DEFINED VS100COMNTOOLS (
             SET VCVARSALL="%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
         )
-    ) ELSE IF "%ARGS1%"=="vs2012" (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2012" (
         IF DEFINED VS110COMNTOOLS (
             SET VCVARSALL="%VS110COMNTOOLS%..\..\VC\vcvarsall.bat"
         )
-    ) ELSE IF "%ARGS1%"=="vs2013" (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2013" (
         IF DEFINED VS120COMNTOOLS (
             SET VCVARSALL="%VS120COMNTOOLS%..\..\VC\vcvarsall.bat"
         )
-    ) ELSE IF "%ARGS1%"=="vs2015" (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2015" (
         IF DEFINED VS140COMNTOOLS (
             SET VCVARSALL="%VS140COMNTOOLS%..\..\VC\vcvarsall.bat"
         )
-    ) ELSE IF "%ARGS1%"=="vs2017" (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2017" (
         FOR /F "tokens=1,2,*" %%I IN ('REG QUERY HKLM\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7 /v 15.0 ^| FINDSTR "15.0"') DO (
             SET VCVARSALL="%%~KVC\Auxiliary\Build\vcvarsall.bat"
         )
-    ) ELSE IF "%ARGS1%"=="vs2019" (
+    ) ELSE IF "%A_VS_VERSION%"=="vs2019" (
         FOR /F %%I IN ('REG QUERY HKLM\SOFTWARE\WOW6432Node\Microsoft ^| FINDSTR "VisualStudio_"') DO (
             CALL :FINDVS "%%~I" 2019
         )
@@ -228,27 +241,27 @@ IF "%ARGS2%"=="devenv" (
         GOTO ERROR
     )
 
-    IF "%ARGS3%"=="x86_32" (
-        SET ARCH=x86
-    ) ELSE IF "%ARGS3%"=="x86_64" (
-        SET ARCH=amd64
+    IF "%A_CMAKE_BUILD_ARCH%"=="x86_32" (
+        SET VC_ARCH=x86
+    ) ELSE IF "%A_CMAKE_BUILD_ARCH%"=="x86_64" (
+        SET VC_ARCH=amd64
     )
 
-    CALL %VCVARSALL% %ARCH%
+    CALL !VCVARSALL! !VC_ARCH!
 
     MKDIR build
     PUSHD build
-    cmake -DCMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% -G "NMake Makefiles" .. || (
+    cmake %CMAKE_OPTIONS% -D CMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% -G "NMake Makefiles" .. || (
         POPD
         GOTO ERROR
     )
-    IF "%TARGET%"=="" (
+    IF "%CMAKE_BUILD_TARGET%"=="" (
         cmake --build . --config %CMAKE_BUILD_TYPE% --clean-first || (
             POPD
             GOTO ERROR
         )
     ) ELSE (
-        cmake --build . --target "%TARGET%" --config %CMAKE_BUILD_TYPE% --clean-first || (
+        cmake --build . --target "%CMAKE_BUILD_TARGET%" --config %CMAKE_BUILD_TYPE% --clean-first || (
             POPD
             GOTO ERROR
         )
@@ -256,6 +269,7 @@ IF "%ARGS2%"=="devenv" (
     POPD
 )
 
+ENDLOCAL
 GOTO :EOF
 
 :FINDVS
@@ -267,5 +281,6 @@ REG QUERY %~1\Capabilities | FINDSTR /R "ApplicationName.*REG_SZ.*Microsoft.Visu
 GOTO :EOF
 
 :ERROR
+ENDLOCAL
 EXIT /B 1
 GOTO :EOF

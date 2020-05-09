@@ -27,7 +27,7 @@ jobs:
       - run:
           name: cmd
           shell: cmd.exe
-          command: .cicommon\cmake_vs_build.bat vs2019 nmake x86_32 Release win7 install
+          command: .cicommon\cmake_vs_build.bat vs2019 nmake win7 "" x86_32 Release install
 
 workflows:
   version: 2
