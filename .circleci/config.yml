@@ -66,9 +66,9 @@ workflows:
           matrix:
             parameters:
               vs_version: [ vs2019 ]
-              vs_tool: [ devenv, nmake ]
+              vs_tool: [ devenv ]
               windows_version: [ win7 ]
               cmake_options: [ -- ]
-              # cmake_build_arch: [ x86_32, x86_64 ]
-              # cmake_build_type: [ Debug, Release, RelWithDebInfo, MinSizeRel ]
+              cmake_build_arch: [ x86_32 ]
+              cmake_build_type: [ Release ]
               cmake_build_target: [ install ]
