@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  win: circleci/windows@2.4.0
+  win: sundaowen/hello-world@dev:test
 
 commands:
   choco_install_cmake:
